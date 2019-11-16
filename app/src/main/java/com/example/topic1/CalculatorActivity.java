@@ -11,13 +11,13 @@ import android.widget.EditText;
 public class CalculatorActivity extends AppCompatActivity {
 
     Button btn0, btn1, btn2, btn3, btn4, btn5, btn6,
-            btn7, btn8, btn9, btnAdd, btnSub, btnModulos,
-            btnMultiply, btndot, btnEqual;
+            btn7, btn8, btn9, btnAdd, btnSub, btnDivision,
+            btnMultiply, btnDot, btnEqual, btnC;
     EditText etNumber;
 
-    float mValueOne, mValueTwo;
+    float ValueNo1, ValueNo2;
 
-    boolean crunchifyAddition, mSubtract, crunchifyMultiplication, crunchifyDivision;
+    boolean isAddition, isSubtract, isMultiplication, isDivision;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +36,12 @@ public class CalculatorActivity extends AppCompatActivity {
         btn9 = findViewById(R.id.btnNine);
         btnAdd = findViewById(R.id.btnPlus);
         btnSub = findViewById(R.id.btnSubtract);
-        btnModulos = findViewById(R.id.btnModulos);
+        btnDivision = findViewById(R.id.btnModulos);
         btnMultiply = findViewById(R.id.btnMultiply);
-        btndot = findViewById(R.id.btnDot);
+        btnDot = findViewById(R.id.btnDot);
         btnEqual = findViewById(R.id.btnEqual);
         etNumber = findViewById(R.id.etFirst);
+        btnC = findViewById(R.id.btnC);
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +113,7 @@ public class CalculatorActivity extends AppCompatActivity {
             }
         });
 
-        btndot.setOnClickListener(new View.OnClickListener() {
+        btnDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 etNumber.setText(etNumber.getText() + ".");
@@ -123,21 +124,13 @@ public class CalculatorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (TextUtils.isEmpty(etNumber.getText())){
-                    etNumber.setError("Enter a Number");
-                    return;
+                if (etNumber == null) {
+                    etNumber.setText("");
+                } else {
+                    ValueNo1 = Float.parseFloat(etNumber.getText() + "");
+                    isAddition = true;
+                    etNumber.setText(null);
                 }
-
-                float N;
-                N = Float.parseFloat(etNumber.getText().toString());
-
-                CalculatorLogic calculatorLogic = new CalculatorLogic();
-                calculatorLogic.setNumber(N);
-                calculatorLogic.Addition();
-                calculatorLogic.getNumber();
-
-                String S = String.valueOf(N);
-                etNumber.setText(S);
 
             }
         });
@@ -145,15 +138,8 @@ public class CalculatorActivity extends AppCompatActivity {
         btnSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                String N;
-//                N = etNumber.getText().toString();
-//
-//                CalculatorLogic calculatorLogic = new CalculatorLogic();
-//                calculatorLogic.setNumber(N);
-
-                mValueOne = Float.parseFloat(etNumber.getText() + "");
-                mSubtract = true;
+                ValueNo1 = Float.parseFloat(etNumber.getText() + "");
+                isSubtract = true;
                 etNumber.setText(null);
             }
         });
@@ -161,59 +147,64 @@ public class CalculatorActivity extends AppCompatActivity {
         btnMultiply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                String N;
-//                N = etNumber.getText().toString();
-//
-//                CalculatorLogic calculatorLogic = new CalculatorLogic();
-//                calculatorLogic.setNumber(N);
-
-                mValueOne = Float.parseFloat(etNumber.getText() + "");
-                crunchifyMultiplication = true;
+                ValueNo1 = Float.parseFloat(etNumber.getText() + "");
+                isMultiplication = true;
                 etNumber.setText(null);
             }
         });
 
-        btnModulos.setOnClickListener(new View.OnClickListener() {
+        btnDivision.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                String N;
-//                N = etNumber.getText().toString();
-//
-//                CalculatorLogic calculatorLogic = new CalculatorLogic();
-//                calculatorLogic.setNumber(N);
-
-                mValueOne = Float.parseFloat(etNumber.getText() + "");
-                crunchifyDivision = true;
+                ValueNo1 = Float.parseFloat(etNumber.getText() + "");
+                isDivision = true;
                 etNumber.setText(null);
+            }
+        });
+
+        btnC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etNumber.setText("");
             }
         });
 
         btnEqual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mValueTwo = Float.parseFloat(etNumber.getText() + "");
-//
-//                if (crunchifyAddition == true) {
-//                    etNumber.setText(mValueOne + mValueTwo + "");
-//                    crunchifyAddition = false;
-//                }
-//
-//                if (mSubtract == true) {
-//                    etNumber.setText(mValueOne - mValueTwo + "");
-//                    mSubtract = false;
-//                }
-//
-//                if (crunchifyMultiplication == true) {
-//                    etNumber.setText(mValueOne * mValueTwo + "");
-//                    crunchifyMultiplication = false;
-//                }
-//
-//                if (crunchifyDivision == true) {
-//                    etNumber.setText(mValueOne / mValueTwo + "");
-//                    crunchifyDivision = false;
-//                }
+                ValueNo2 = Float.parseFloat(etNumber.getText() + "");
+
+                if (isAddition == true) {
+                    Calc calc = new Calc();
+                    calc.setAdd(isAddition);
+                    Float result = calc.Calculate(ValueNo1,ValueNo2);
+                    etNumber.setText(Float.toString(result));
+                    isAddition = false;
+                }
+
+                if (isSubtract == true) {
+                    Calc calc = new Calc();
+                    calc.setSub(isSubtract);
+                    Float result = calc.Calculate(ValueNo1,ValueNo2);
+                    etNumber.setText(Float.toString(result));
+                    isSubtract = false;
+                }
+
+                if (isMultiplication == true) {
+                    Calc calc = new Calc();
+                    calc.setMul(isMultiplication);
+                    Float result = calc.Calculate(ValueNo1,ValueNo2);
+                    etNumber.setText(Float.toString(result));
+                    isMultiplication = false;
+                }
+
+                if (isDivision == true) {
+                    Calc calc = new Calc();
+                    calc.setDiv(isDivision);
+                    Float result = calc.Calculate(ValueNo1,ValueNo2);
+                    etNumber.setText(Float.toString(result));
+                    isDivision = false;
+                }
             }
         });
 
